@@ -1,0 +1,471 @@
+#!/bin/bash
+
+
+
+
+#case when directory opened and index don't match, thus exit 1 and claims file cannot be opened though words are found
+./fuzzquery ~/cs50-dev/shared/tse/output/toscrape-1.index 10 11111 | ./querier ~/cs50-dev/shared/tse/output/letters-10 ~/cs50-dev/shared/tse/output/toscrape-1.index
+./fuzzquery: generating 10 queries from 2326 words
+File 18 cannot be opened
+Query? Query: walking and alarms invisible hannibal 
+No documents match
+--------------------------------
+Query: publication and victorious hollow and france 
+No documents match
+--------------------------------
+Query: mouths and rage vol allowed or wears seriously 
+No documents match
+--------------------------------
+Query: evolution 
+Matches 1 documents (ranked):
+
+#testing with proper query
+echo "search and fourier or tse" | ./querier ~/cs50-dev/shared/tse/output/toscrape-1 ~/cs50-dev/shared/tse/output/toscrape-1.index
+Query? Query: search and fourier or tse 
+No documents match
+--------------------------------
+
+
+#testing with multiple spaces
+echo "tab     here    output  " | ./querier ~/cs50-dev/shared/tse/output/toscrape-1 ~/cs50-dev/shared/tse/output/toscrape-1.index
+Query? Query: tab here output 
+No documents match
+--------------------------------
+
+
+#testing with special characters
+echo "two-part" | ./querier ~/cs50-dev/shared/tse/output/toscrape-1 ~/cs50-dev/shared/tse/output/toscrape-1.index
+Query? Error: bad character '-' in query
+
+echo "two part'!" | ./querier ~/cs50-dev/shared/tse/output/toscrape-1 ~/cs50-dev/shared/tse/output/toscrape-1.index
+Query? Error: bad character ''' in query
+
+
+echo "two, part" | ./querier ~/cs50-dev/shared/tse/output/toscrape-1 ~/cs50-dev/shared/tse/output/toscrape-1.index
+Query? Error: bad character ',' in query
+
+#testing with consecutive and and ors
+echo "search and and tse" | ./querier ~/cs50-dev/shared/tse/output/toscrape-1 ~/cs50-dev/shared/tse/output/toscrape-1.index
+Error: 'and' and 'and' cannot be consecutive
+Query? Query: search and and tse 
+
+echo "search or or here" | ./querier ~/cs50-dev/shared/tse/output/toscrape-1 ~/cs50-dev/shared/tse/output/toscrape-1.index
+Error: 'or' and 'or' cannot be consecutive
+Query? Query: search or or here 
+
+#testing with initial/terminal and and ors
+echo "and fourier" | ./querier ~/cs50-dev/shared/tse/output/toscrape-1 ~/cs50-dev/shared/tse/output/toscrape-1.index
+Error: 'and' cannot be first
+Query? Query: and fourier 
+echo "or fourier" | ./querier ~/cs50-dev/shared/tse/output/toscrape-1 ~/cs50-dev/shared/tse/output/toscrape-1.index
+Error: 'or' cannot be first
+Query? Query: or fourier 
+echo "fourier and" | ./querier ~/cs50-dev/shared/tse/output/toscrape-1 ~/cs50-dev/shared/tse/output/toscrape-1.index
+Error: 'and' cannot be last
+Query? Query: fourier and 
+echo "fourier or" | ./querier ~/cs50-dev/shared/tse/output/toscrape-1 ~/cs50-dev/shared/tse/output/toscrape-1.index
+Error: 'or' cannot be last
+Query? Query: fourier or 
+
+#testing with bad folder and bad index
+echo "fourier" | ./querier ~/cs50-dev/shared/tse/output/toscrape ~/cs50-dev/shared/tse/output/toscrape-1.index
+Incorrect page directory
+
+echo "fourier" | ./querier ~/cs50-dev/shared/tse/output/toscrape ~/cs50-dev/shared/tse/output/toscrape-8.index
+Incorrect page directory
+
+#testing with extra arguments
+echo "fourier" | ./querier ~/cs50-dev/shared/tse/output/toscrape ~/cs50-dev/shared/tse/output/toscrape-1.index extra
+usage: ./querier pageDirectory indexFilename
+
+#testing with 1 argument
+echo "fourier" | ./querier ~/cs50-dev/shared/tse/output/toscrape
+usage: ./querier pageDirectory indexFilename
+#testing with no argument
+echo "fourier" | ./querier
+usage: ./querier pageDirectory indexFilename
+#testing with uppercase letters
+echo "fourieR AND tse" | ./querier ~/cs50-dev/shared/tse/output/toscrape ~/cs50-dev/shared/tse/output/toscrape-1.index
+Incorrect page directory
+#some fuzz testing with different seeds and index
+./fuzzquery ~/cs50-dev/shared/tse/output/toscrape-1.index 10 1211 | ./querier ~/cs50-dev/shared/tse/output/toscrape-1 ~/cs50-dev/shared/tse/output/toscrape-1.index
+./fuzzquery: generating 10 queries from 2326 words
+Query? Query: toddlers how and luckett yield or hearts 
+Matches 10 documents (ranked):
+Score   4  12: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/starving-hearts-triangular-trade-trilogy-1_990/index.html
+Score   1  1: http://cs50tse.cs.dartmouth.edu/tse/toscrape/index.html
+Score   1  6: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/olio_984/index.html
+Score   1  7: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/our-band-could-be-your-life-scenes-from-the-american-indie-underground-1981-1991_985/index.html
+Score   1  8: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/rip-it-up-and-start-again_986/index.html
+Score   1  9: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/scott-pilgrims-precious-little-life-scott-pilgrim-1_987/index.html
+Score   1  10: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/set-me-free_988/index.html
+Score   1  11: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/shakespeares-sonnets_989/index.html
+Score   1  59: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/default_15/index.html
+Score   1  73: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books_1/index.html
+--------------------------------
+Query: closeout sometimes or clandestine platonic eerie builder 
+No documents match
+--------------------------------
+Query: joined notes and interested 
+No documents match
+--------------------------------
+Query: experimenting throwing and beefburger 
+No documents match
+--------------------------------
+Query: traveling read and british stunned victims 
+No documents match
+--------------------------------
+Query: sociologist and collects fame 
+No documents match
+--------------------------------
+Query: confront or integrates and unusual and exiles unsettling or annual 
+Matches 1 documents (ranked):
+Score   1  19: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sharp-objects_997/index.html
+--------------------------------
+Query: picture and anonymous or naked and roy amendments 
+No documents match
+--------------------------------
+Query: feet hate and fact his 
+No documents match
+--------------------------------
+Query: restaurant and diaries underbellies strictness or folly or clarioning 
+Matches 1 documents (ranked):
+Score   1  55: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/fantasy_19/index.html
+--------------------------------
+
+
+./fuzzquery ~/cs50-dev/shared/tse/output/toscrape-2.index 10 111 | ./querier ~/cs50-dev/shared/tse/output/toscrape-2 ~/cs50-dev/shared/tse/output/toscrape-2.index
+./fuzzquery: generating 10 queries from 13563 words
+Query? Query: vor and rods and bush and skilful glissant or afghan 
+Matches 1 documents (ranked):
+Score   1  352: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-kite-runner_847/index.html
+--------------------------------
+Query: trophy 
+Matches 1 documents (ranked):
+Score   1  326: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/icing-aces-hockey-2_25/index.html
+--------------------------------
+Query: occident and emmy or suspicions aground and dependent triggered 
+No documents match
+--------------------------------
+Query: earthly and since pestos or forged 
+Matches 2 documents (ranked):
+Score   1  104: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/louisa-the-extraordinary-life-of-mrs-adams_818/index.html
+Score   1  203: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/lab-girl_595/index.html
+--------------------------------
+Query: continually or violin and milbourn bec and intended and stoic 
+Matches 1 documents (ranked):
+Score   1  101: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/benjamin-franklin-an-american-life_460/index.html
+--------------------------------
+Query: igniting or targets hound oink or retake gwyneth 
+Matches 1 documents (ranked):
+Score   2  297: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/avatar-the-last-airbender-smoke-and-shadow-part-3-smoke-and-shadow-3_881/index.html
+--------------------------------
+Query: morris misinformation 
+No documents match
+--------------------------------
+Query: ultimate and action or brutalized 
+Matches 1 documents (ranked):
+Score   2  566: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/a-time-of-torment-charlie-parker-14_657/index.html
+--------------------------------
+Query: girlsbut or sgot politique or mina hack 
+Matches 1 documents (ranked):
+Score   2  418: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/little-red_817/index.html
+--------------------------------
+Query: derek gaz 
+No documents match
+--------------------------------
+
+./fuzzquery ~/cs50-dev/shared/tse/output/toscrape-2.index 10 131 | ./querier ~/cs50-dev/shared/tse/output/toscrape-2 ~/cs50-dev/shared/tse/output/toscrape-2.index
+./fuzzquery: generating 10 queries from 13563 words
+Query? Query: opposite 
+Matches 6 documents (ranked):
+Score   3  76: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/how-to-be-miserable-40-strategies-you-already-use_897/index.html
+Score   1  148: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/americas-war-for-the-greater-middle-east-a-military-history_361/index.html
+Score   1  233: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/quarter-life-poetry-poems-for-the-young-broke-and-hangry_727/index.html
+Score   1  275: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/off-sides-off-1_38/index.html
+Score   1  465: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/a-girls-guide-to-moving-on-new-beginnings-2_359/index.html
+Score   1  470: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/dirty-dive-bar-1_615/index.html
+--------------------------------
+Query: meetings unhappiness johansen vermeer and stabbed 
+No documents match
+--------------------------------
+Query: brotherhood improvised 
+No documents match
+--------------------------------
+Query: moods primar adsley or beat coveted fought 
+No documents match
+--------------------------------
+Query: monarchs or tin and musty and entering or wolynn mighty 
+Matches 1 documents (ranked):
+Score   2  543: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-constant-princess-the-tudor-court-1_493/index.html
+--------------------------------
+Query: cruise libeled 
+No documents match
+--------------------------------
+Query: romanians or bulked or thigh regal heartwarming or josh 
+Matches 4 documents (ranked):
+Score   5  227: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-crossover_398/index.html
+Score   2  367: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/orchestra-of-exiles-the-story-of-bronislaw-huberman-the-israel-philharmonic-and-the-one-thousand-jews-he-saved-from-nazi-horrors_337/index.html
+Score   1  111: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-art-of-startup-fundraising_606/index.html
+Score   1  183: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/lamb-the-gospel-according-to-biff-christs-childhood-pal_182/index.html
+--------------------------------
+Query: transformation troubleshooting swallowed straight or chefs 
+Matches 1 documents (ranked):
+Score   1  143: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/my-paris-kitchen-recipes-and-stories_910/index.html
+--------------------------------
+Query: plunged and inexorably 
+No documents match
+--------------------------------
+Query: printed fires reiterate jacked lumpur or comprehension 
+No documents match
+--------------------------------
+
+./fuzzquery ~/cs50-dev/shared/tse/output/toscrape-2.index 10 11 | ./querier ~/cs50-dev/shared/tse/output/toscrape-2 ~/cs50-dev/shared/tse/output/toscrape-2.index
+./fuzzquery: generating 10 queries from 13563 words
+Query? Query: blues or grafting bound or dolmen and badly inspirations 
+Matches 2 documents (ranked):
+Score   2  557: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/what-happened-on-beale-street-secrets-of-the-south-mysteries-2_506/index.html
+Score   1  132: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/my-kitchen-year-136-recipes-that-saved-my-life_646/index.html
+--------------------------------
+Query: amortized and exporters 
+No documents match
+--------------------------------
+Query: haiku dreary or result or gigantic and zagreb eventually 
+Matches 23 documents (ranked):
+Score   2  55: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-art-and-science-of-low-carbohydrate-living_570/index.html
+Score   2  208: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/civilization-and-its-discontents_140/index.html
+Score   1  45: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/crime_51/index.html
+Score   1  46: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-long-shadow-of-small-ghosts-murder-and-memory-in-an-american-city_848/index.html
+Score   1  47: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/erotica_50/index.html
+Score   1  49: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/cultural_49/index.html
+Score   1  53: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/why-the-right-went-wrong-conservatism-from-goldwater-to-the-tea-party-and-beyond_781/index.html
+Score   1  58: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-bulletproof-diet-lose-up-to-a-pound-a-day-reclaim-energy-and-focus-upgrade-your-life_931/index.html
+Score   1  59: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/novels_46/index.html
+Score   1  61: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/short-stories_45/index.html
+Score   1  63: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/suspense_44/index.html
+Score   1  68: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/unqualified-how-god-uses-broken-people-to-do-big-things_873/index.html
+Score   1  78: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/academic_40/index.html
+Score   1  158: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/zealot-the-life-and-times-of-jesus-of-nazareth_785/index.html
+Score   1  192: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/adult-fiction_29/index.html
+Score   1  194: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/parenting_28/index.html
+Score   1  222: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/paranormal_24/index.html
+Score   1  305: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-midnight-watch-a-novel-of-the-titanic-and-the-californian_640/index.html
+Score   1  318: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/modern-romance_820/index.html
+Score   1  330: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-book-of-basketball-the-nba-according-to-the-sports-guy_232/index.html
+Score   1  342: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sleeping-giants-themis-files-1_604/index.html
+Score   1  379: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-power-of-now-a-guide-to-spiritual-enlightenment_855/index.html
+Score   1  576: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-road-to-little-dribbling-adventures-of-an-american-in-britain-notes-from-a-small-island-2_277/index.html
+--------------------------------
+Query: confidence stage universities beacons and useless 
+No documents match
+--------------------------------
+Query: avatar and hurtled or din gather and bedfored 
+No documents match
+--------------------------------
+Query: cake and contest or unearthed or persiflage luba widespread 
+Matches 1 documents (ranked):
+Score   1  150: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-mathews-men-seven-brothers-and-the-war-against-hitlers-u-boats_408/index.html
+--------------------------------
+Query: frigates scott or planetaria club or winningest 
+Matches 1 documents (ranked):
+Score   2  329: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/friday-night-lights-a-town-a-team-and-a-dream_158/index.html
+--------------------------------
+Query: christopher 
+Matches 9 documents (ranked):
+Score   9  102: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-faith-of-christopher-hitchens-the-restless-soul-of-the-worlds-most-notorious-atheist_495/index.html
+Score   1  6: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/behind-closed-doors_962/index.html
+Score   1  12: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-elephant-tree_968/index.html
+Score   1  24: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/in-her-wake_980/index.html
+Score   1  98: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/you-you-1_784/index.html
+Score   1  99: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/biography_36/index.html
+Score   1  100: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-rise-of-theodore-roosevelt-theodore-roosevelt-1_276/index.html
+Score   1  101: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/benjamin-franklin-an-american-life_460/index.html
+Score   1  197: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/a-heartbreaking-work-of-staggering-genius_115/index.html
+--------------------------------
+Query: geek and barbarians 
+No documents match
+--------------------------------
+Query: restlessly and introducing or compacts own or talos 
+Matches 1 documents (ranked):
+Score   1  343: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/soft-apocalypse_833/index.html
+--------------------------------
+./fuzzquery ~/cs50-dev/shared/tse/output/toscrape-2.index 10 11 | ./querier ~/cs50-dev/shared/tse/output/toscrape-2 ~/cs50-dev/shared/tse/output/toscrape-2.index
+./fuzzquery: generating 10 queries from 13563 words
+Query? Query: blues or grafting bound or dolmen and badly inspirations 
+Matches 2 documents (ranked):
+Score   2  557: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/what-happened-on-beale-street-secrets-of-the-south-mysteries-2_506/index.html
+Score   1  132: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/my-kitchen-year-136-recipes-that-saved-my-life_646/index.html
+--------------------------------
+Query: amortized and exporters 
+No documents match
+--------------------------------
+Query: haiku dreary or result or gigantic and zagreb eventually 
+Matches 23 documents (ranked):
+Score   2  55: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-art-and-science-of-low-carbohydrate-living_570/index.html
+Score   2  208: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/civilization-and-its-discontents_140/index.html
+Score   1  45: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/crime_51/index.html
+Score   1  46: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-long-shadow-of-small-ghosts-murder-and-memory-in-an-american-city_848/index.html
+Score   1  47: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/erotica_50/index.html
+Score   1  49: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/cultural_49/index.html
+Score   1  53: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/why-the-right-went-wrong-conservatism-from-goldwater-to-the-tea-party-and-beyond_781/index.html
+Score   1  58: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-bulletproof-diet-lose-up-to-a-pound-a-day-reclaim-energy-and-focus-upgrade-your-life_931/index.html
+Score   1  59: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/novels_46/index.html
+Score   1  61: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/short-stories_45/index.html
+Score   1  63: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/suspense_44/index.html
+Score   1  68: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/unqualified-how-god-uses-broken-people-to-do-big-things_873/index.html
+Score   1  78: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/academic_40/index.html
+Score   1  158: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/zealot-the-life-and-times-of-jesus-of-nazareth_785/index.html
+Score   1  192: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/adult-fiction_29/index.html
+Score   1  194: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/parenting_28/index.html
+Score   1  222: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/paranormal_24/index.html
+Score   1  305: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-midnight-watch-a-novel-of-the-titanic-and-the-californian_640/index.html
+Score   1  318: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/modern-romance_820/index.html
+Score   1  330: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-book-of-basketball-the-nba-according-to-the-sports-guy_232/index.html
+Score   1  342: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sleeping-giants-themis-files-1_604/index.html
+Score   1  379: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-power-of-now-a-guide-to-spiritual-enlightenment_855/index.html
+Score   1  576: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-road-to-little-dribbling-adventures-of-an-american-in-britain-notes-from-a-small-island-2_277/index.html
+--------------------------------
+Query: confidence stage universities beacons and useless 
+No documents match
+--------------------------------
+Query: avatar and hurtled or din gather and bedfored 
+No documents match
+--------------------------------
+Query: cake and contest or unearthed or persiflage luba widespread 
+Matches 1 documents (ranked):
+Score   1  150: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-mathews-men-seven-brothers-and-the-war-against-hitlers-u-boats_408/index.html
+--------------------------------
+Query: frigates scott or planetaria club or winningest 
+Matches 1 documents (ranked):
+Score   2  329: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/friday-night-lights-a-town-a-team-and-a-dream_158/index.html
+--------------------------------
+Query: christopher 
+Matches 9 documents (ranked):
+Score   9  102: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-faith-of-christopher-hitchens-the-restless-soul-of-the-worlds-most-notorious-atheist_495/index.html
+Score   1  6: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/behind-closed-doors_962/index.html
+Score   1  12: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-elephant-tree_968/index.html
+Score   1  24: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/in-her-wake_980/index.html
+Score   1  98: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/you-you-1_784/index.html
+Score   1  99: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/biography_36/index.html
+Score   1  100: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-rise-of-theodore-roosevelt-theodore-roosevelt-1_276/index.html
+Score   1  101: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/benjamin-franklin-an-american-life_460/index.html
+Score   1  197: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/a-heartbreaking-work-of-staggering-genius_115/index.html
+--------------------------------
+Query: geek and barbarians 
+No documents match
+--------------------------------
+Query: restlessly and introducing or compacts own or talos 
+Matches 1 documents (ranked):
+Score   1  343: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/soft-apocalypse_833/index.html
+--------------------------------
+./fuzzquery ~/cs50-dev/shared/tse/output/toscrape-2.index 10 151 | ./querier ~/cs50-dev/shared/tse/output/toscrape-2 ~/cs50-dev/shared/tse/output/toscrape-2.index
+./fuzzquery: generating 10 queries from 13563 words
+Query? Query: analogies 
+Matches 1 documents (ranked):
+Score   1  249: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-fabric-of-the-cosmos-space-time-and-the-texture-of-reality_572/index.html
+--------------------------------
+Query: shoring 
+Matches 1 documents (ranked):
+Score   2  384: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/reskilling-america-learning-to-labor-in-the-twenty-first-century_922/index.html
+--------------------------------
+Query: statistician 
+Matches 1 documents (ranked):
+Score   1  382: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/everydata-the-misinformation-hidden-in-the-little-data-you-consume-every-day_891/index.html
+--------------------------------
+Query: tries waged and enjoying 
+No documents match
+--------------------------------
+Query: rafted 
+Matches 1 documents (ranked):
+Score   1  387: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-gutsy-girl-escapades-for-your-life-of-epic-adventure_934/index.html
+--------------------------------
+Query: decoded 
+No documents match
+--------------------------------
+Query: ffea 
+Matches 1 documents (ranked):
+Score   1  220: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/art-and-fear-observations-on-the-perils-and-rewards-of-artmaking_559/index.html
+--------------------------------
+Query: peleus 
+Matches 1 documents (ranked):
+Score   2  316: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-song-of-achilles_762/index.html
+--------------------------------
+Query: persian or begun semblance recyclables 
+Matches 1 documents (ranked):
+Score   1  148: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/americas-war-for-the-greater-middle-east-a-military-history_361/index.html
+--------------------------------
+Query: precipitants or rocked marimba or lamb 
+Matches 11 documents (ranked):
+Score   3  183: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/lamb-the-gospel-according-to-biff-christs-childhood-pal_182/index.html
+Score   1  143: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/my-paris-kitchen-recipes-and-stories_910/index.html
+Score   1  176: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/doctor-sleep-the-shining-2_686/index.html
+Score   1  177: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/pet-sematary_726/index.html
+Score   1  178: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-loney_756/index.html
+Score   1  179: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/follow-you-home_809/index.html
+Score   1  180: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/security_925/index.html
+Score   1  181: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/humor_30/index.html
+Score   1  182: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/holidays-on-ice_167/index.html
+Score   1  535: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-guernsey-literary-and-potato-peel-pie-society_253/index.html
+Score   1  579: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/a-summer-in-europe_458/index.html
+--------------------------------
+#some valgrind test
+./fuzzquery ~/cs50-dev/shared/tse/output/toscrape-2.index 10 4511 | valgrind --leak-check=full --show-leak-kinds=all ./querier ~/cs50-dev/shared/tse/output/toscrape-2 ~/cs50-dev/shared/tse/output/toscrape-2.index
+==42573== Memcheck, a memory error detector
+==42573== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==42573== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==42573== Command: ./querier /thayerfs/home/f003x5p/cs50-dev/shared/tse/output/toscrape-2 /thayerfs/home/f003x5p/cs50-dev/shared/tse/output/toscrape-2.index
+==42573== 
+./fuzzquery: generating 10 queries from 13563 words
+Query? Query: graham or ease transcript 
+Matches 2 documents (ranked):
+Score   6  173: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/red-dragon-hannibal-lecter-1_390/index.html
+Score   1  148: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/americas-war-for-the-greater-middle-east-a-military-history_361/index.html
+--------------------------------
+Query: shtick threads technique roundball and mysteriously or lately 
+Matches 1 documents (ranked):
+Score   1  94: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/killing-floor-jack-reacher-1_382/index.html
+--------------------------------
+Query: manipulate ali decluttering and helps or wisdom muller 
+No documents match
+--------------------------------
+Query: tribal julien or questionable and handbook 
+No documents match
+--------------------------------
+Query: huns 
+No documents match
+--------------------------------
+Query: conceived incidents lukewarm lent or movingly 
+No documents match
+--------------------------------
+Query: celebrates or aftermath roumania 
+Matches 8 documents (ranked):
+Score   2  44: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/a-light-in-the-attic_1000/index.html
+Score   2  219: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-new-drawing-on-the-right-side-of-the-brain_550/index.html
+Score   1  35: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-black-maria_991/index.html
+Score   1  248: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/diary-of-a-citizen-scientist-chasing-tiger-beetles-and-other-new-ways-of-engaging-the-world_517/index.html
+Score   1  377: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-genius-of-birds_843/index.html
+Score   1  417: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/walt-disneys-alice-in-wonderland_777/index.html
+Score   1  481: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/beyond-good-and-evil_6/index.html
+Score   1  582: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/see-america-a-celebration-of-our-national-parks-treasured-sites_732/index.html
+--------------------------------
+Query: steadfast priorities or beck 
+Matches 1 documents (ranked):
+Score   7  98: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/you-you-1_784/index.html
+--------------------------------
+Query: inquisition 
+Matches 2 documents (ranked):
+Score   1  504: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/candide_316/index.html
+Score   1  548: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-marriage-of-opposites_759/index.html
+--------------------------------
+Query: socialize yearns and buttercream niamey and plugin 
+No documents match
+--------------------------------
+==42573== 
+==42573== HEAP SUMMARY:
+==42573==     in use at exit: 0 bytes in 0 blocks
+==42573==   total heap usage: 496,502 allocs, 496,502 frees, 365,280,118 bytes allocated
+==42573== 
+==42573== All heap blocks were freed -- no leaks are possible
+==42573== 
+==42573== For counts of detected and suppressed errors, rerun with: -v
+==42573== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
